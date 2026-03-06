@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎮 Game Content Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07070e;
+  --s1: #0d0d1c;
+  --s2: #131325;
+  --border: #1e1e3a;
+  --border2: #2a2a50;
+  --cyan: #00e5ff;
+  --green: #00ff88;
+  --gold: #ffc842;
+  --red: #ff3e6c;
+  --purple: #8b5cf6;
+  --text: #e2e2f0;
+  --muted: #4a4a70;
+  --muted2: #6b6b95;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  min-height: 100vh;
+  padding: 0;
+  background-image:
+    radial-gradient(ellipse at 10% 20%, rgba(139,92,246,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(0,229,255,0.05) 0%, transparent 50%);
+}
+
+/* ---- TOPBAR ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(13,13,28,0.9);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-logo {
+  font-size: 18px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.topbar-sub { font-size: 12px; color: var(--muted2); margin-top: 2px; }
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ---- LAYOUT ---- */
+.layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  min-height: calc(100vh - 61px);
+}
+
+/* ---- SIDEBAR ---- */
+.sidebar {
+  border-left: 1px solid var(--border);
+  padding: 24px 20px;
+  background: var(--s1);
+  overflow-y: auto;
+}
+
+.field { margin-bottom: 18px; }
+label {
+  display: block;
+  font-size: 11px; font-weight: 700;
+  color: var(--muted2);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+input, textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: 'Tajawal', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  direction: rtl;
+}
+input:focus, textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+}
+textarea { resize: vertical; min-height: 80px; }
+
+.generate-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--purple) 0%, var(--cyan) 100%);
+  border: none; border-radius: 12px;
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 17px; font-weight: 900;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.generate-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(139,92,246,0.4); }
+.generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.generate-btn .spinner {
+  display: none;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+.sidebar-section-title {
+  font-size: 11px; font-weight: 700;
+  color: var(--muted); letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 12px;
+}
+
+/* ---- CONTENT AREA ---- */
+.content {
+  padding: 28px 32px;
+  overflow-y: auto;
+}
+
+/* ---- STEP CARDS ---- */
+.step-card {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 22px 24px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.step-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.step-card.ready::before { opacity: 1; }
+.step-card.s-cyan::before { background: var(--cyan); }
+.step-card.s-gold::before { background: var(--gold); }
+.step-card.s-green::before { background: var(--green); }
+.step-card.s-purple::before { background: var(--purple); }
+.step-card.s-red::before { background: var(--red); }
+
+.card-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.card-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 16px; font-weight: 900; color: #fff;
+}
+.card-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.icon-cyan { background: rgba(0,229,255,0.12); }
+.icon-gold { background: rgba(255,200,66,0.12); }
+.icon-green { background: rgba(0,255,136,0.12); }
+.icon-purple { background: rgba(139,92,246,0.12); }
+.icon-red { background: rgba(255,62,108,0.12); }
+
+.card-status {
+  font-size: 11px; font-weight: 700; padding: 4px 12px;
+  border-radius: 20px; letter-spacing: 1px;
+}
+.status-waiting { background: rgba(255,255,255,0.05); color: var(--muted2); border: 1px solid var(--border2); }
+.status-done { background: rgba(0,255,136,0.1); color: var(--green); border: 1px solid rgba(0,255,136,0.25); }
+
+/* ---- TITLES LIST ---- */
+.titles-list { display: flex; flex-direction: column; gap: 8px; }
+.title-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer; transition: all 0.2s;
+}
+.title-item:hover { border-color: var(--cyan); background: rgba(0,229,255,0.04); }
+.title-item.selected { border-color: var(--cyan); background: rgba(0,229,255,0.07); }
+.title-num {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--muted2);
+  flex-shrink: 0;
+}
+.title-item.selected .title-num { background: var(--cyan); color: #000; }
+.title-text { font-size: 14px; color: var(--text); flex: 1; line-height: 1.4; }
+
+/* ---- SELECTED TITLE BOX ---- */
+.selected-title-box {
+  margin-top: 14px;
+  padding: 14px 16px;
+  background: rgba(0,229,255,0.06);
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: 10px;
+  display: none;
+}
+.selected-title-box.show { display: block; }
+.selected-label { font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 1px; margin-bottom: 6px; }
+.selected-value { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.4; }
+.copy-tiny {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 10px; padding: 7px 14px;
+  background: var(--cyan); color: #000;
+  border: none; border-radius: 8px;
+  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+}
+.copy-tiny:hover { background: #00cfee; }
+.copy-tiny.copied { background: var(--green); }
+
+/* ---- TEXT OUTPUT ---- */
+.text-output {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 13px;
+  color: var(--muted2);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+  direction: rtl;
+  min-height: 60px;
+}
+.text-output.has-content { color: var(--text); }
+
+.copy-bar {
+  display: flex; justify-content: flex-end; margin-top: 10px;
+}
+
+/* ---- PROMPT BOX ---- */
+.prompt-box {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,200,66,0.2);
+  border-radius: 10px;
+  padding: 16px;
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  direction: ltr;
+  text-align: left;
+  font-family: 'Courier New', monospace;
+}
+
+/* ---- LINK BOX ---- */
+.link-generated-box {
+  padding: 16px;
+  background: rgba(0,255,136,0.05);
+  border: 1px solid rgba(0,255,136,0.2);
+  border-radius: 12px;
+}
+.link-url {
+  font-size: 12px; color: var(--green);
+  direction: ltr; text-align: left;
+  word-break: break-all;
+  font-family: monospace;
+  padding: 10px; background: rgba(0,0,0,0.3);
+  border-radius: 8px; margin-bottom: 12px;
+}
+.link-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.link-btn {
+  padding: 9px 18px; border-radius: 8px; border: none;
+  font-family: 'Tajawal', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.link-btn-green { background: var(--green); color: #000; }
+.link-btn-green:hover { background: #00e87a; }
+.link-btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+.link-btn-outline:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* ---- LOADING STATE ---- */
+.loading-overlay {
+  position: absolute; inset: 0;
+  background: rgba(7,7,14,0.8);
+  backdrop-filter: blur(4px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border-radius: 16px;
+  z-index: 10;
+}
+.loading-overlay.hide { display: none; }
+.loading-dots { display: flex; gap: 6px; margin-bottom: 10px; }
+.loading-dots span {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--cyan);
+  animation: dotPulse 1.2s infinite;
+}
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse { 0%,80%,100%{transform:scale(0.6);opacity:0.3} 40%{transform:scale(1);opacity:1} }
+.loading-text { font-size: 13px; color: var(--muted2); }
+
+/* ---- TOAST ---- */
+.toast {
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--s2); border: 1px solid var(--green);
+  color: var(--green); padding: 11px 24px;
+  border-radius: 100px; font-size: 14px; font-weight: 700;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  z-index: 999; white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ---- EMPTY STATE ---- */
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  height: 100%; min-height: 400px;
+  color: var(--muted);
+  text-align: center;
+}
+.empty-icon { font-size: 60px; margin-bottom: 16px; opacity: 0.3; }
+.empty-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.empty-sub { font-size: 14px; color: var(--muted); }
+
+/* ---- ANIM ---- */
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(16px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.fade-in { animation: fadeInUp 0.4s ease both; }
+.fade-in-2 { animation: fadeInUp 0.4s 0.1s ease both; }
+.fade-in-3 { animation: fadeInUp 0.4s 0.2s ease both; }
+.fade-in-4 { animation: fadeInUp 0.4s 0.3s ease both; }
+.fade-in-5 { animation: fadeInUp 0.4s 0.4s ease both; }
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { border-left: none; border-bottom: 1px solid var(--border); }
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div>
+    <div class="topbar-logo">🎮 Game Content Studio</div>
+    <div class="topbar-sub">أداة إنشاء المحتوى بالذكاء الاصطناعي</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="status-dot"></div>
+    <span style="font-size:12px;color:var(--muted2);">AI متصل</span>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR: INPUT -->
+  <div class="sidebar">
+    <div class="sidebar-section-title">بيانات المحتوى</div>
+
+    <div class="field">
+      <label>🎮 اسم اللعبة / البرنامج</label>
+      <input type="text" id="inputName" placeholder="مثال: Free Fire MAX Hack 2025" />
+    </div>
+
+    <div class="field">
+      <label>🔗 رابط MediaFire</label>
+      <input type="text" id="inputLink" placeholder="https://www.mediafire.com/..." />
+    </div>
+
+    <div class="field">
+      <label>📺 رابط قناة يوتيوب (ثابت)</label>
+      <input type="text" id="inputChannel" placeholder="https://www.youtube.com/@قناتك" />
+    </div>
+
+    <div class="field">
+      <label>📦 حجم الملف (اختياري)</label>
+      <input type="text" id="inputSize" placeholder="مثال: 1.2 GB" />
+    </div>
+
+    <div class="field">
+      <label>🏷️ النوع (اختياري)</label>
+      <input type="text" id="inputType" placeholder="لعبة / برنامج / تطبيق" />
+    </div>
+
+    <button class="generate-btn" id="generateBtn" onclick="startGenerate()">
+      <span id="btnText">⚡ ابدأ التوليد بالذكاء الاصطناعي</span>
+      <div class="spinner" id="btnSpinner"></div>
+    </button>
+
+    <div class="divider"></div>
+
+    <div class="sidebar-section-title">🌐 إعدادات الموقع</div>
+    <div class="field">
+      <label>رابط صفحة التحميل (download.html)</label>
+      <input type="text" id="inputSiteDomain" placeholder="https://موقعك.netlify.app/download.html" />
+    </div>
+    <div style="font-size:11px;color:var(--muted);line-height:1.6;margin-top:-10px;">
+      ده عشان يولد اللينك النهائي اللي هتشاركه مع المتابعين
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="contentArea">
+
+    <div class="empty-state" id="emptyState">
+      <div class="empty-icon">🤖</div>
+      <div class="empty-title">جاهز للبدء</div>
+      <div class="empty-sub">ادخل اسم اللعبة ورابط الملف وابدأ التوليد</div>
+    </div>
+
+    <!-- RESULTS (hidden until generated) -->
+    <div id="resultsArea" style="display:none;">
+
+      <!-- STEP 1: TITLES -->
+      <div class="step-card s-cyan fade-in" id="card-titles">
+        <div class="loading-overlay hide" id="load-titles">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <div class="loading-text">بيولّد العناوين...</div>
+        </div>
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon icon-cyan">📋</div>
+            اختر عنوان للفيديو
+          </div>
+          <span class="card-status status-waiting" id="status-titles">انتظر...</span>
+        </div>
+        <div class="titles-list" id="titlesList"></div>
+        <div class="selected-title-box" id="selectedBox">
+          <div class="selected-label">✅ العنوان المختار</div>
+          <div class="selected-value" id="selectedTitleText"></div>
+          <button class="copy-tiny" onclick="copyText('selectedTitleText', this)">📋 نسخ العنوان</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: DESCRIPTION -->
+      <div class="step-card s-gold fade-in-2" id="card-desc">
+        <div class="loading-overlay hide" id="load-desc">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <div class="loading-text">بيكتب الوصف والكلمات المفتاحية...</div>
+        </div>
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon icon-gold">📝</div>
+            وصف الفيديو + كلمات مفتاحية
+          </div>
+          <span class="card-status status-waiting" id="status-desc">انتظر...</span>
+        </div>
+        <div class="text-output" id="descOutput">سيظهر الوصف هنا بعد التوليد...</div>
+        <div class="copy-bar">
+          <button class="copy-tiny" onclick="copyText('descOutput', this)">📋 نسخ الوصف</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: THUMBNAIL PROMPT -->
+      <div class="step-card s-purple fade-in-3" id="card-prompt">
+        <div class="loading-overlay hide" id="load-prompt">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <div class="loading-text">بيكتب البرومبت...</div>
+        </div>
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon icon-purple">🎨</div>
+            برومبت صورة الغلاف (Thumbnail)
+          </div>
+          <span class="card-status status-waiting" id="status-prompt">انتظر...</span>
+        </div>
+        <div class="prompt-box" id="promptOutput">سيظهر البرومبت هنا...</div>
+        <div class="copy-bar" style="margin-top:10px;">
+          <button class="copy-tiny" onclick="copyText('promptOutput', this)">📋 نسخ البرومبت</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: PAGE LINK -->
+      <div class="step-card s-green fade-in-4" id="card-link">
+        <div class="loading-overlay hide" id="load-link">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <div class="loading-text">بيولّد اللينك...</div>
+        </div>
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon icon-green">🔗</div>
+            لينك صفحة التحميل
+          </div>
+          <span class="card-status status-waiting" id="status-link">انتظر...</span>
+        </div>
+        <div class="link-generated-box" id="linkBox" style="display:none;">
+          <div class="link-url" id="linkUrl"></div>
+          <div class="link-actions">
+            <button class="link-btn link-btn-green" onclick="copyLinkUrl()">📋 نسخ اللينك</button>
+            <button class="link-btn link-btn-outline" onclick="openLink()">👁️ معاينة</button>
+          </div>
+        </div>
+        <div id="linkWaiting" style="font-size:13px;color:var(--muted2);">سيتولد اللينك تلقائياً بعد التوليد</div>
+      </div>
+
+      <!-- STEP 5: COMMENT -->
+      <div class="step-card s-cyan fade-in-4" id="card-comment">
+        <div class="loading-overlay hide" id="load-comment">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <div class="loading-text">بيكتب الكومنت...</div>
+        </div>
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon icon-cyan">💬</div>
+            كومنت التعليقات (للمتابعين)
+          </div>
+          <span class="card-status status-waiting" id="status-comment">انتظر...</span>
+        </div>
+        <div class="text-output" id="commentOutput">سيظهر الكومنت هنا...</div>
+        <div class="copy-bar">
+          <button class="copy-tiny" onclick="copyText('commentOutput', this)">📋 نسخ الكومنت</button>
+        </div>
+      </div>
+
+      <!-- STEP 6: TELEGRAM POST -->
+      <div class="step-card s-red fade-in-5" id="card-tg">
+        <div class="loading-overlay hide" id="load-tg">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <div class="loading-text">بيكتب بوست التيليجرام...</div>
+        </div>
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon icon-red">✈️</div>
+            بوست جروب تيليجرام
+          </div>
+          <span class="card-status status-waiting" id="status-tg">انتظر...</span>
+        </div>
+        <div class="text-output" id="tgOutput">سيظهر البوست هنا...</div>
+        <div class="copy-bar">
+          <button class="copy-tiny" onclick="copyText('tgOutput', this)">📋 نسخ البوست</button>
+        </div>
+      </div>
+
+    </div><!-- end resultsArea -->
+  </div><!-- end content -->
+</div><!-- end layout -->
+
+<script>
+// ==================== STATE ====================
+let state = {
+  name: '', link: '', channel: '', size: '', type: '',
+  selectedTitle: '',
+  generatedLink: '',
+  desc: '', prompt: '', comment: '', tg: ''
+};
+
+// ==================== CLAUDE API ====================
+async function callClaude(prompt, loaderId) {
+  showLoader(loaderId);
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    hideLoader(loaderId);
+    return text.trim();
+  } catch(e) {
+    hideLoader(loaderId);
+    return 'خطأ في الاتصال بالذكاء الاصطناعي';
+  }
+}
+
+// ==================== MAIN FLOW ====================
+async function startGenerate() {
+  state.name = document.getElementById('inputName').value.trim();
+  state.link = document.getElementById('inputLink').value.trim();
+  state.channel = document.getElementById('inputChannel').value.trim();
+  state.size = document.getElementById('inputSize').value.trim() || 'غير محدد';
+  state.type = document.getElementById('inputType').value.trim() || 'لعبة';
+
+  if (!state.name || !state.link) {
+    toast('⚠️ لازم تكتب اسم اللعبة ورابط الملف!', 'red');
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  document.getElementById('btnText').style.display = 'none';
+  document.getElementById('btnSpinner').style.display = 'block';
+
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('resultsArea').style.display = 'block';
+
+  // Step 1: Titles
+  setStatus('titles', 'جاري التوليد...', 'active');
+  showLoader('load-titles');
+  const titlesRaw = await callClaude(
+    `أنت خبير في تحسين محركات البحث على يوتيوب وتخصص في قنوات الألعاب العربية.
+اكتب لي 10 عناوين يوتيوب احترافية وجذابة جداً للعبة: "${state.name}"
+المحتوى: نسخة مهكرة/معدلة مجانية للتحميل
+
+متطلبات كل عنوان:
+- بالعربية الفصحى أو العامية المصرية
+- يحتوي على كلمات قوية مثل: مجاني، بدون حظر، آخر إصدار، 2025، هكر، تهكير
+- بين 50-100 حرف
+- جذاب ويشجع على الضغط
+
+أعطني الـ10 عناوين فقط، كل عنوان في سطر جديد، رقّم إياهم من 1 إلى 10، بدون أي كلام آخر.`,
+    'load-titles'
+  );
+
+  const titles = titlesRaw.split('\n')
+    .map(l => l.replace(/^\d+[\.\-\)]\s*/, '').trim())
+    .filter(l => l.length > 10)
+    .slice(0, 10);
+
+  renderTitles(titles);
+  setStatus('titles', '✅ اختر عنوان', 'done');
+  document.getElementById('card-titles').classList.add('ready');
+
+  // Step 2: Description
+  setStatus('desc', 'جاري التوليد...', 'active');
+  const descRaw = await callClaude(
+    `أنت متخصص في كتابة وصف يوتيوب SEO للقنوات العربية في مجال الألعاب.
+اكتب وصفاً احترافياً لفيديو يوتيوب عن: "${state.name}"
+
+يجب أن يحتوي الوصف على:
+1. مقدمة جذابة (3-4 سطور)
+2. محتوى الفيديو والمزايا
+3. كلمات مفتاحية مضمّنة بشكل طبيعي
+4. سطر فاصل ---
+5. قسم "كلمات مفتاحية:" يحتوي على 20+ كلمة/عبارة مفتاحية مفصولة بفواصل
+
+اكتب الوصف مباشرة بدون أي مقدمة أو تعليق.`,
+    'load-desc'
+  );
+
+  state.desc = descRaw;
+  const descEl = document.getElementById('descOutput');
+  descEl.textContent = descRaw;
+  descEl.classList.add('has-content');
+  setStatus('desc', '✅ جاهز', 'done');
+  document.getElementById('card-desc').classList.add('ready');
+
+  // Step 3: Thumbnail Prompt
+  setStatus('prompt', 'جاري التوليد...', 'active');
+  const promptRaw = await callClaude(
+    `أنت خبير في إنشاء صور الغلاف لقنوات يوتيوب الألعاب.
+اكتب برومبت باللغة الإنجليزية لإنشاء صورة غلاف (thumbnail) احترافية لفيديو يوتيوب عن لعبة: "${state.name}"
+
+متطلبات الصورة:
+- خلفية داكنة درامية
+- ألوان مشعة ونيون
+- نص بارز يقول "${state.name}" + "HACK/MOD/FREE"
+- شخصية من اللعبة أو أيقونتها
+- تأثيرات بصرية مبهرة
+- أسلوب gaming thumbnail احترافي
+
+اكتب البرومبت الإنجليزي فقط بدون أي شرح.`,
+    'load-prompt'
+  );
+
+  state.prompt = promptRaw;
+  document.getElementById('promptOutput').textContent = promptRaw;
+  setStatus('prompt', '✅ جاهز', 'done');
+  document.getElementById('card-prompt').classList.add('ready');
+
+  // Step 4: Generate Link
+  setStatus('link', 'جاري التوليد...', 'active');
+  const domain = document.getElementById('inputSiteDomain').value.trim()
+    || 'https://mygamechannel.netlify.app/download.html';
+
+  const encoded = new URLSearchParams({
+    n: state.name,
+    d: `نسخة مهكرة من ${state.name} - مجانية 100% بدون حظر`,
+    t: state.type,
+    s: state.size,
+    l: state.link,
+    c: state.channel
+  }).toString();
+
+  state.generatedLink = `${domain}?${encoded}`;
+  document.getElementById('linkUrl').textContent = state.generatedLink;
+  document.getElementById('linkBox').style.display = 'block';
+  document.getElementById('linkWaiting').style.display = 'none';
+  setStatus('link', '✅ جاهز', 'done');
+  document.getElementById('card-link').classList.add('ready');
+
+  // Step 5: Comment
+  setStatus('comment', 'جاري التوليد...', 'active');
+  const commentRaw = await callClaude(
+    `اكتب كومنت احترافي أنزله في تعليقات فيديو يوتيوب عن تحميل لعبة: "${state.name}"
+الكومنت ده هيتحط كتعليق مثبت على الفيديو لإرشاد المتابعين لرابط التحميل.
+
+اللينك هو: ${state.generatedLink}
+
+متطلبات الكومنت:
+- يبدأ بالسلام والترحيب
+- يذكر اسم اللعبة
+- يشرح إن التحميل مجاني وآمن
+- يحتوي على اللينك
+- يطلب منهم الاشتراك واللايك
+- إيموجيات مناسبة
+- مش أطول من 8 سطور
+
+اكتب الكومنت فقط بدون أي كلام إضافي.`,
+    'load-comment'
+  );
+
+  state.comment = commentRaw;
+  const commentEl = document.getElementById('commentOutput');
+  commentEl.textContent = commentRaw;
+  commentEl.classList.add('has-content');
+  setStatus('comment', '✅ جاهز', 'done');
+  document.getElementById('card-comment').classList.add('ready');
+
+  // Step 6: Telegram Post
+  setStatus('tg', 'جاري التوليد...', 'active');
+  const tgRaw = await callClaude(
+    `اكتب بوست احترافي لجروب تيليجرام لمتابعين قناة يوتيوب ألعاب عربية.
+البوست عن: تحميل لعبة "${state.name}" مجاناً
+
+رابط التحميل: ${state.generatedLink}
+
+متطلبات البوست:
+- مظهر جذاب مع إيموجيات كتير ومتنوعة
+- عنوان كبير مثير للانتباه
+- وصف مختصر للعبة
+- مزايا النسخة المهكرة في نقاط
+- اللينك واضح
+- طلب مشاركة البوست
+- جملة ختامية تشجع على الاشتراك بالقناة
+- لا يتجاوز 20 سطر
+
+اكتب البوست فقط.`,
+    'load-tg'
+  );
+
+  state.tg = tgRaw;
+  const tgEl = document.getElementById('tgOutput');
+  tgEl.textContent = tgRaw;
+  tgEl.classList.add('has-content');
+  setStatus('tg', '✅ جاهز', 'done');
+  document.getElementById('card-tg').classList.add('ready');
+
+  // Done
+  btn.disabled = false;
+  document.getElementById('btnText').style.display = 'block';
+  document.getElementById('btnSpinner').style.display = 'none';
+  document.getElementById('btnText').textContent = '🔄 إعادة التوليد';
+  toast('🎉 تم توليد كل المحتوى بنجاح!');
+}
+
+// ==================== TITLES RENDER ====================
+function renderTitles(titles) {
+  const list = document.getElementById('titlesList');
+  list.innerHTML = '';
+  titles.forEach((t, i) => {
+    const div = document.createElement('div');
+    div.className = 'title-item';
+    div.dataset.title = t;
+    div.innerHTML = `<div class="title-num">${i+1}</div><div class="title-text">${t}</div>`;
+    div.onclick = () => selectTitle(div, t);
+    list.appendChild(div);
+  });
+}
+
+function selectTitle(el, title) {
+  document.querySelectorAll('.title-item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  state.selectedTitle = title;
+  document.getElementById('selectedTitleText').textContent = title;
+  document.getElementById('selectedBox').classList.add('show');
+}
+
+// ==================== HELPERS ====================
+function setStatus(id, text, type) {
+  const el = document.getElementById(`status-${id}`);
+  el.textContent = text;
+  el.className = 'card-status ' + (type === 'done' ? 'status-done' : 'status-waiting');
+}
+
+function showLoader(id) { document.getElementById(id)?.classList.remove('hide'); }
+function hideLoader(id) { document.getElementById(id)?.classList.add('hide'); }
+
+function copyText(elId, btn) {
+  const text = document.getElementById(elId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '✅ تم النسخ!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.innerHTML = orig; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function copyLinkUrl() {
+  navigator.clipboard.writeText(state.generatedLink).then(() => toast('✅ تم نسخ اللينك!'));
+}
+
+function openLink() {
+  window.open(state.generatedLink, '_blank');
+}
+
+function toast(msg, color) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.borderColor = color === 'red' ? 'var(--red)' : 'var(--green)';
+  el.style.color = color === 'red' ? 'var(--red)' : 'var(--green)';
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

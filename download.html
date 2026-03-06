@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تحميل اللعبة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --surface: #0f0f1a;
+    --surface2: #16162a;
+    --border: #252540;
+    --accent: #00e5ff;
+    --green: #00ff88;
+    --red: #ff3e6c;
+    --purple: #7c5cfc;
+    --text: #e8e8f8;
+    --muted: #55557a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 60px;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgba(0,229,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(124,92,252,0.08) 0%, transparent 50%);
+  }
+
+  /* HERO */
+  .hero {
+    position: relative; text-align: center;
+    padding: 60px 20px 40px; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,229,255,0.04) 0%, transparent 100%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.25);
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    padding: 5px 16px; border-radius: 20px;
+    letter-spacing: 2px; margin-bottom: 20px;
+  }
+  #heroTitle {
+    font-size: clamp(24px, 6vw, 46px);
+    font-weight: 900; line-height: 1.15; color: #fff;
+    text-shadow: 0 0 60px rgba(0,229,255,0.3);
+    margin-bottom: 10px;
+    animation: fadeInUp 0.6s ease both;
+  }
+  .hero-sub {
+    color: var(--muted); font-size: 15px;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.6s 0.1s ease both;
+  }
+  .meta-pills {
+    display: flex; justify-content: center;
+    gap: 10px; flex-wrap: wrap;
+    animation: fadeInUp 0.6s 0.2s ease both;
+  }
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 13px; color: var(--muted);
+  }
+  .pill .dot { width:6px;height:6px;border-radius:50%;background:var(--green); }
+
+  /* MAIN */
+  .main { max-width: 520px; margin: 0 auto; padding: 0 20px; }
+
+  .section-title {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    letter-spacing: 2px; text-transform: uppercase;
+    text-align: center; margin-bottom: 28px; position: relative;
+  }
+  .section-title::after {
+    content: ''; display: block; width: 40px; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--purple));
+    margin: 8px auto 0; border-radius: 2px;
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-bottom: 36px;
+    animation: fadeInUp 0.5s 0.3s ease both;
+  }
+  .progress-bar-bg {
+    height: 6px; background: var(--surface);
+    border-radius: 10px; overflow: hidden;
+    margin-bottom: 8px; border: 1px solid var(--border);
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    width: 0%;
+  }
+  .progress-text {
+    font-size: 12px; color: var(--muted); text-align: center; letter-spacing: 1px;
+  }
+  .progress-text span { color: var(--accent); font-weight: 700; }
+
+  /* STEPS */
+  .steps { position: relative; padding-bottom: 10px; }
+  .steps::before {
+    content: ''; position: absolute;
+    right: 32px; top: 50px; bottom: 50px; width: 2px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--green) 100%);
+    opacity: 0.2; pointer-events: none;
+  }
+
+  .step {
+    display: flex; align-items: stretch; gap: 16px;
+    margin-bottom: 16px; position: relative;
+    animation: fadeInUp 0.5s ease both;
+  }
+  .step:nth-child(1) { animation-delay: 0.1s; }
+  .step:nth-child(2) { animation-delay: 0.2s; }
+
+  .step-num {
+    width: 64px; min-width: 64px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start;
+    padding-top: 18px;
+  }
+  .step-circle {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900; border: 2px solid;
+    transition: all 0.4s; flex-shrink: 0;
+  }
+  .step-circle.s1 { border-color:var(--accent); color:var(--accent); background:rgba(0,229,255,0.08); }
+  .step-circle.s2 { border-color:var(--green); color:var(--green); background:rgba(0,255,136,0.08); }
+  .step-circle.done {
+    background: var(--green) !important;
+    border-color: var(--green) !important;
+    color: #000 !important;
+    box-shadow: 0 0 20px rgba(0,255,136,0.5);
+  }
+
+  .step-card {
+    flex: 1; background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px; padding: 20px 22px;
+    transition: all 0.4s; position: relative; overflow: hidden;
+  }
+  .step-card::before {
+    content: ''; position: absolute;
+    top:0;left:0;right:0; height: 2px;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .step:nth-child(1) .step-card::before { background: var(--accent); }
+  .step:nth-child(2) .step-card::before { background: var(--green); }
+  .step-card.active::before { opacity: 1; }
+  .step-card.active { border-color: rgba(255,255,255,0.1); }
+  .step-card.locked { opacity: 0.4; filter: blur(0.5px); pointer-events: none; }
+  .step-card.done-card { opacity: 0.65; }
+
+  .step-head {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 12px;
+  }
+  .step-name { font-size: 17px; font-weight: 900; color: #fff; }
+  .step-badge {
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px; letter-spacing: 1px;
+  }
+  .badge-active { background:rgba(0,229,255,0.15); color:var(--accent); border:1px solid rgba(0,229,255,0.3); }
+  .badge-locked { background:rgba(255,255,255,0.05); color:var(--muted); border:1px solid var(--border); }
+  .badge-done { background:rgba(0,255,136,0.15); color:var(--green); border:1px solid rgba(0,255,136,0.3); }
+
+  .step-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+
+  .action-btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 14px 20px; border: none; border-radius: 12px;
+    font-family: 'Tajawal', sans-serif; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit;
+  }
+  .btn-subscribe {
+    background: linear-gradient(135deg, #ff0000, #cc0000);
+    color: #fff; box-shadow: 0 6px 24px rgba(255,0,0,0.3);
+  }
+  .btn-subscribe:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(255,0,0,0.4); }
+  .btn-download {
+    background: linear-gradient(135deg, var(--green), #00cc6a);
+    color: #000; box-shadow: 0 6px 24px rgba(0,255,136,0.3); font-size: 18px;
+  }
+  .btn-download:hover { transform:translateY(-2px); box-shadow:0 14px 40px rgba(0,255,136,0.45); }
+
+  .confirm-prompt {
+    display: none; margin-top: 12px; padding: 14px;
+    background: rgba(0,229,255,0.05);
+    border: 1px solid rgba(0,229,255,0.15);
+    border-radius: 10px; font-size: 14px;
+    color: var(--text); text-align: center;
+  }
+  .confirm-row { display: flex; gap: 10px; margin-top: 12px; }
+  .confirm-btn {
+    flex: 1; padding: 11px; border-radius: 10px; border: none;
+    font-family: 'Tajawal', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .confirm-yes { background: var(--green); color: #000; }
+  .confirm-yes:hover { background: #00e87a; }
+  .confirm-no { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid var(--border); }
+  .confirm-no:hover { border-color: var(--red); color: var(--red); }
+
+  .lock-display { text-align: center; padding: 10px; font-size: 30px; opacity: 0.25; }
+
+  @keyframes unlockPop {
+    0%{transform:scale(0.8);opacity:0} 60%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1}
+  }
+  .unlocking { animation: unlockPop 0.5s ease both; }
+
+  /* FOOTER */
+  .footer { text-align:center; margin-top:50px; color:var(--muted); font-size:13px; }
+  .footer a { color:var(--accent); text-decoration:none; }
+
+  /* TOAST */
+  .toast {
+    position:fixed; bottom:30px; left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:var(--surface2); border:1px solid var(--green);
+    color:var(--green); padding:12px 24px; border-radius:100px;
+    font-size:14px; font-weight:700;
+    transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    z-index:1000; white-space:nowrap;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  @keyframes fadeInUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  @media(max-width:480px) {
+    .steps::before { right: 28px; }
+    .step-num { width:56px; min-width:56px; }
+    .step-circle { width:38px; height:38px; font-size:16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">🎉 تم!</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">🎮 تحميل مجاني</div>
+  <h1 id="heroTitle">...</h1>
+  <p class="hero-sub" id="heroDesc"></p>
+  <div class="meta-pills">
+    <div class="pill"><span class="dot"></span><span id="metaType">لعبة</span></div>
+    <div class="pill">📦 <span id="metaSize">—</span></div>
+    <div class="pill">🔓 مجاني 100%</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg">
+      <div class="progress-bar-fill" id="progressFill"></div>
+    </div>
+    <p class="progress-text"><span id="progressText">0</span> / 2 خطوات مكتملة</p>
+  </div>
+
+  <p class="section-title">خطوتين بس وتحمّل 🚀</p>
+
+  <div class="steps">
+
+    <!-- STEP 1 -->
+    <div class="step" id="step1">
+      <div class="step-num">
+        <div class="step-circle s1" id="circle1">1</div>
+      </div>
+      <div class="step-card active" id="card1">
+        <div class="step-head">
+          <div class="step-name">🔴 اشترك في القناة</div>
+          <span class="step-badge badge-active" id="badge1">الخطوة الأولى</span>
+        </div>
+        <p class="step-desc">اشترك في قناتنا على يوتيوب عشان تفتح زر التحميل</p>
+        <a class="action-btn btn-subscribe" id="subBtn" href="#" target="_blank" onclick="onSubClick()">
+          ▶ اشترك في القناة دلوقتي
+        </a>
+        <div class="confirm-prompt" id="confirmSub">
+          <p style="margin-bottom:10px;">✅ اشتركت في القناة؟</p>
+          <div class="confirm-row">
+            <button class="confirm-btn confirm-yes" onclick="completeStep1()">أيوه، اشتركت!</button>
+            <button class="confirm-btn confirm-no" onclick="hideConfirm('confirmSub')">لسه</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="step2">
+      <div class="step-num">
+        <div class="step-circle s2" id="circle2">2</div>
+      </div>
+      <div class="step-card locked" id="card2">
+        <div class="step-head">
+          <div class="step-name">⬇️ حمّل الآن</div>
+          <span class="step-badge badge-locked" id="badge2">🔒 مقفول</span>
+        </div>
+        <p class="step-desc">مبروك! دلوقتي تقدر تحمّل مجاناً 🎉</p>
+        <div class="lock-display" id="lockStep2">🔒</div>
+        <a class="action-btn btn-download" id="downloadBtn" href="#" style="display:none;">
+          ⬇️ تحميل اللعبة — مجاني
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>الملفات محمّلة على <a href="#">MediaFire</a> وآمنة تماماً ✅</p>
+    <p style="margin-top:8px;">أي مشكلة؟ تعال <a id="channelFooter" href="#">القناة</a> واكتب في التعليقات 💬</p>
+  </div>
+</div>
+
+<script>
+  const p = new URLSearchParams(window.location.search);
+  const gameName = p.get('n') || 'اللعبة';
+  const gameDesc = p.get('d') || 'نسخة مهكرة مجانية';
+  const gameType = p.get('t') || 'لعبة';
+  const gameSize = p.get('s') || '—';
+  const mediaLink = p.get('l') || '#';
+  const ytChannel = p.get('c') || '#';
+
+  document.getElementById('heroTitle').textContent = `تحميل: ${gameName}`;
+  document.getElementById('heroDesc').textContent = gameDesc;
+  document.getElementById('metaType').textContent = gameType;
+  document.getElementById('metaSize').textContent = gameSize;
+  document.title = `تحميل ${gameName} — مجاني`;
+  document.getElementById('subBtn').href = ytChannel;
+  document.getElementById('downloadBtn').href = mediaLink;
+  document.getElementById('channelFooter').href = ytChannel;
+
+  function updateProgress(n) {
+    document.getElementById('progressFill').style.width = (n / 2 * 100) + '%';
+    document.getElementById('progressText').textContent = n;
+  }
+
+  function onSubClick() {
+    setTimeout(() => {
+      document.getElementById('confirmSub').style.display = 'block';
+    }, 1800);
+  }
+
+  function completeStep1() {
+    document.getElementById('confirmSub').style.display = 'none';
+    const c1 = document.getElementById('circle1');
+    c1.textContent = '✓'; c1.classList.add('done');
+    document.getElementById('badge1').textContent = '✅ مكتمل';
+    document.getElementById('badge1').className = 'step-badge badge-done';
+    document.getElementById('card1').classList.replace('active', 'done-card');
+    document.getElementById('subBtn').style.cssText = 'pointer-events:none;opacity:0.5';
+    updateProgress(1);
+    showToast('🎉 تم الاشتراك! فُتح التحميل');
+    setTimeout(() => {
+      const c2 = document.getElementById('card2');
+      c2.classList.remove('locked');
+      c2.classList.add('active', 'unlocking');
+      document.getElementById('badge2').textContent = 'جاهز!';
+      document.getElementById('badge2').className = 'step-badge badge-done';
+      document.getElementById('lockStep2').style.display = 'none';
+      document.getElementById('downloadBtn').style.display = 'flex';
+      document.getElementById('circle2').textContent = '⬇';
+      document.getElementById('circle2').classList.add('done');
+      updateProgress(2);
+    }, 700);
+  }
+
+  function hideConfirm(id) { document.getElementById(id).style.display = 'none'; }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
